@@ -41,6 +41,19 @@ class Payment extends Model
     *
     * @return array
     */
+    public static function indexRules(){
+        
+        return [
+            "page" => "nullable|integer|min:1",
+            "page_size" => "nullable|integer|min:1",
+        ];
+
+    }
+    /**
+    * Define input rules
+    *
+    * @return array
+    */
     public static function createRules(){
         
         return [

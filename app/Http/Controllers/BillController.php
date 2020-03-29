@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;        
 use App\Bill;
+use App\Http\Resources\Bill as BillResource;
+use App\Http\Resources\BillCollection;
 
 class BillController extends Controller
 {
@@ -12,12 +14,12 @@ class BillController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $bills = Bill::all();
 
-        return response()->json($bills);
+        $this->validate($request, Bill::indexRules());
+
+        return response()->json( new BillCollection( Bill::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 

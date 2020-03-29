@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Project;
-// use App\Alert;
-// use App\Bill;
+use App\Http\Resources\Project as ProjectResource;
+use App\Http\Resources\ProjectCollection;
 
 class ProjectController extends Controller
 {
@@ -14,12 +14,12 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $projects = Project::all();
 
-        return response()->json($projects);
+        $this->validate($request, Project::indexRules());
+
+        return response()->json( new ProjectCollection( Project::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 

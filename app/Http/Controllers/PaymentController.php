@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;        
 use App\Payment;
+use App\Http\Resources\Payment as PaymentResource;
+use App\Http\Resources\PaymentCollection;
 
 class PaymentController extends Controller
 {
@@ -12,12 +14,12 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $payments = Payment::all();
 
-        return response()->json($payments);
+        $this->validate($request, Payment::indexRules());
+
+        return response()->json( new PaymentCollection( Payment::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 

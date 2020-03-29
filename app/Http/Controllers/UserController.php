@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;        
 use App\User;
 
+use App\Http\Resources\User as UserResource;
+use App\Http\Resources\UserCollection;
+
 class UserController extends Controller
 {
     /**
@@ -12,12 +15,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $users = User::all();
+        // $users = User::all();
 
-        return response()->json($users);
+        $this->validate($request, User::indexRules());
+
+        return response()->json( new UserCollection( User::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 
@@ -86,7 +91,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
-        $this->validate($request, User::createRules());
+        $this->validate($request, User::updateRules());
                                         
         $user= User::findOrFail($id);
         

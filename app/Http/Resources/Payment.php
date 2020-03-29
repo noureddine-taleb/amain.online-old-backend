@@ -4,16 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\Resource;
 
-class User extends Resource
+class Payment extends Resource
 {
-
-    /**
-     * Indicates if the resource's collection keys should be preserved.
-     *
-     * @var bool
-     */
-    public $preserveKeys = true;
-
     /**
      * Transform the resource into an array.
      *
@@ -22,18 +14,13 @@ class User extends Resource
      */
     public function toArray($request)
     {
-                 
+
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'phone' => $this->phone,
-            'dob' => $this->dob,
-            'image' => $this->image,
-            'privileges' => $this->privileges,
+            'bill_id' => $this->name,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
         ];
-
     }
 }

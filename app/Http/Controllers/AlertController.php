@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Alert;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\Alert as AlertResource;
+use App\Http\Resources\AlertCollection;
 
 class AlertController extends Controller
 {
@@ -13,12 +15,12 @@ class AlertController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $alerts = Alert::all();
 
-        return response()->json($alerts);
+        $this->validate($request, Alert::indexRules());
+
+        return response()->json( new AlertCollection( Alert::paginate( (int)( $request->page_size ?? env('PAGE_SIZE') ) )) );
 
     }
 
