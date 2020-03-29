@@ -46,9 +46,13 @@ $app->singleton(
     App\Console\Kernel::class
 );
 
-$this->app->singleton('filter', function($app) {
-    return new App\Http\Resources\RequestQueryFilter;
-});
+// $app->singleton('filter', function($app) {
+//     return new App\Http\Resources\User;
+// });
+
+// $app->singleton('filter', function($app) {
+//     return new App\Http\Resources\User;
+// });
 
 /*
 |--------------------------------------------------------------------------
