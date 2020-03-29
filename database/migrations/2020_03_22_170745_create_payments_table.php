@@ -18,6 +18,7 @@ class CreatePaymentsTable extends Migration
             $table->unsignedInteger('bill_id')->unique(); 
                 $table->foreign('bill_id')->references('id')->on('bills');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

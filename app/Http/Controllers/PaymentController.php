@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\Request;        
+use App\Payment;
 
 class PaymentController extends Controller
 {
-    /**
+        /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -14,27 +15,10 @@ class PaymentController extends Controller
     public function index()
     {
         //
-    }
+        $payments = Payment::all();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+        return response()->json($payments);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -46,6 +30,29 @@ class PaymentController extends Controller
     public function show($id)
     {
         //
+        $payment = Payment::findOrFail($id);
+
+        return response()->json($payment);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+
+        $this->validate($request, Payment::createRules());
+
+        $payment = new Payment;
+
+        $payment->bill_id= $request->bill_id;
+        
+        $payment->save();
+ 
+        return response()->json([ 'message' =>'payment created successfully' ,'payment' => $payment],201);
+
     }
 
     /**
@@ -54,9 +61,15 @@ class PaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+                
+        $payment = Payment::findOrFail($id);
+
+        $payment->update( $request->only('bill_id') );
+
+        return response()->json([ 'message' =>'payment edited successfully' ,'payment' => $payment],202);
+       
     }
 
     /**
@@ -68,7 +81,17 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $this->validate($request, Payment::updateRules());
+
+        $payment= Payment::findOrFail($id);
+        
+        $payment->bill_id = $request->bill_id;
+
+        $payment->save();
+
+        return response()->json([ 'message' =>'payment updated successfully' ,'payment' => $payment],202);
+
     }
 
     /**
@@ -79,6 +102,25 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+                
+        $payment = Payment::findOrFail($id);
+        $payment->delete();
+
+         return response()->json([ 'message' =>'payment removed successfully'],202);
+
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function bill($id)
+    {
+
+        $bill = Payment::findOrFail($id)->bill();
+        
+        return response()->json($bill);
+
     }
 }

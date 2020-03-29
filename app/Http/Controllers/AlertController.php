@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Alert;
+use Illuminate\Support\Facades\Validator;
 
 class AlertController extends Controller
 {
@@ -14,27 +16,10 @@ class AlertController extends Controller
     public function index()
     {
         //
-    }
+        $alerts = Alert::all();
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+        return response()->json($alerts);
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -46,6 +31,30 @@ class AlertController extends Controller
     public function show($id)
     {
         //
+        $alert = Alert::findOrFail($id);
+
+        return response()->json($alert);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $this->validate($request, Alert::createRules());
+
+        $alert = new Alert;
+
+        $alert->project_id= $request->project_id;
+        $alert->frequency = $request->frequency;
+        $alert->priority = $request->priority;
+        
+        $alert->save();
+ 
+        return response()->json([ 'message' =>'alert created successfully' ,'alert' => $alert],201);
+
     }
 
     /**
@@ -54,9 +63,15 @@ class AlertController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+
+        $alert = Alert::findOrFail($id);
+
+        $alert->update( $request->only('project_id','frequency','priority') );
+
+        return response()->json([ 'message' =>'alert edited successfully' ,'alert' => $alert],202);
+        
     }
 
     /**
@@ -68,7 +83,19 @@ class AlertController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $this->validate($request, Alert::updateRules());
+        
+        $alert= Alert::findOrFail($id);
+        
+        $alert->project_id = $request->project_id;
+        $alert->priority = $request->priority;
+        $alert->frequency = $request->frequency;
+
+        $alert->save();
+
+        return response()->json([ 'message' =>'alert updated successfully' ,'alert' => $alert],202);
+
     }
 
     /**
@@ -79,6 +106,26 @@ class AlertController extends Controller
      */
     public function destroy($id)
     {
-        //
+        
+        $alert = Alert::findOrFail($id);
+        $alert->delete();
+
+         return response()->json([ 'message' =>'alert removed successfully'],202);
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function project($id)
+    {
+
+        $project = Alert::findOrFail($id)->project();
+
+        return response()->json($project);
+        
     }
 }

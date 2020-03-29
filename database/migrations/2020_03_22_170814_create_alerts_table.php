@@ -20,6 +20,7 @@ class CreateAlertsTable extends Migration
             $table->text('frequency')->enum(['never','monthly','weekly','daily','yearly'])->default(1);
             $table->unsignedInteger('priority');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -1,0 +1,22 @@
+->CRUD operations
+
+filtration pagination
+
+----> override default error handling
+remodel database
+
+testing
+authentication
+
+api server should protect its resource and try to avoid 500 status
+
+golden rules
+
+
+endpoints handlers:
+    
+    -create/update:
+        consistency in : validation ---> eloquent ----> database fields
+
+    -reade/delete:
+        satisfy user needs if resource exists otherwise return not found 404

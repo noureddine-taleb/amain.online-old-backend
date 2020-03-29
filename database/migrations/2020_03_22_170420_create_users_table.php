@@ -19,9 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('phone')->unique();
             $table->date('dob');
             $table->string('image')->unique();
-            $table->string('role')->enum(['normal','responsible','admin'])->default(1);
-            $table->boolean('status')->default(1);
+            $table->string('privileges')->enum(['normal','responsible','admin'])->default(1);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

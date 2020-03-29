@@ -21,6 +21,7 @@ class CreateBillsTable extends Migration
             $table->unsignedInteger('project_id');
                 $table->foreign('project_id')->references('id')->on('projects');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -19,6 +19,7 @@ class CreateProjectsTable extends Migration
             $table->text('desc');
             $table->float('fees');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
