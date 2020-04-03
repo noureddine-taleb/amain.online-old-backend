@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class ExampleMiddleware
+class CORSMiddlware
 {
     /**
      * Handle an incoming request.
@@ -15,6 +15,12 @@ class ExampleMiddleware
      */
     public function handle($request, Closure $next)
     {
-        return $next($request);
+        // Pre-Middleware Action
+
+        $response = $next($request);
+
+        // Post-Middleware Action
+
+        return $response;
     }
 }

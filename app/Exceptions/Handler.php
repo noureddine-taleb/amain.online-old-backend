@@ -75,11 +75,11 @@ class Handler extends ExceptionHandler
 
         $statusCode = $fe->getStatusCode();
         
-        $error['error'] = Response::$statusTexts[$statusCode];
+        // $error['error'] = Response::$statusTexts[$statusCode];
+        $error['error'] = $e->getMessage();      
         
         if (env('APP_DEBUG')) 
         {    
-            $error['message'] = $e->getMessage();      
             $error['file'] = $e->getFile() . ':' . $e->getLine();    
             $error['trace'] = explode("\n", $e->getTraceAsString());  
         }  

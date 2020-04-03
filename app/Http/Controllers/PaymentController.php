@@ -9,17 +9,29 @@ use App\Http\Resources\PaymentCollection;
 
 class PaymentController extends Controller
 {
-        /**
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
 
-        $this->validate($request, Payment::indexRules());
+        $this->validate($this->request, Payment::indexRules());
 
-        return response()->json( new PaymentCollection( Payment::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
+        return response()->json( new PaymentCollection( Payment::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 
@@ -42,14 +54,14 @@ class PaymentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
 
-        $this->validate($request, Payment::createRules());
+        $this->validate($this->request, Payment::createRules());
 
         $payment = new Payment;
 
-        $payment->bill_id= $request->bill_id;
+        $payment->bill_id= $this->request->bill_id;
         
         $payment->save();
  
@@ -63,12 +75,12 @@ class PaymentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
                 
         $payment = Payment::findOrFail($id);
 
-        $payment->update( $request->only('bill_id') );
+        $payment->update( $this->request->only('bill_id') );
 
         return response()->json([ 'message' =>'payment edited successfully' ,'payment' => $payment],202);
        
@@ -77,18 +89,18 @@ class PaymentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
 
-        $this->validate($request, Payment::updateRules());
+        $this->validate($this->request, Payment::updateRules());
 
         $payment= Payment::findOrFail($id);
         
-        $payment->bill_id = $request->bill_id;
+        $payment->bill_id = $this->request->bill_id;
 
         $payment->save();
 

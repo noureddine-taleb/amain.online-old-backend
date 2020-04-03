@@ -13,15 +13,16 @@ class CreateAlertsTable extends Migration
      */
     public function up()
     {
-        Schema::create('alerts', function (Blueprint $table) {
-            $table->Increments('id');
-            $table->unsignedInteger('project_id'); 
-                $table->foreign('project_id')->references('id')->on('projects');
-            $table->text('frequency')->enum(['never','monthly','weekly','daily','yearly'])->default(1);
-            $table->unsignedInteger('priority');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        // Schema::create('alerts', function (Blueprint $table) {
+        //     $table->Increments('id');
+        //     $table->unsignedInteger('project_id'); 
+        //         $table->foreign('project_id')->references('id')->on('projects');
+        //     $table->unsignedInteger('frequency_id')->default(1);
+        //         $table->foreign('frequency_id')->references('id')->on('frequencies');
+        //     $table->unsignedInteger('priority');
+        //     $table->timestamps();
+        //     $table->softDeletes();
+        // });
     }
 
     /**

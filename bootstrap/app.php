@@ -69,9 +69,12 @@ $app->singleton(
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JWTMiddleware::class,
+]);
+$app->routeMiddleware([
+    'acl.auth' => App\Http\Middleware\JWTMiddleware::class,
+]);
 
 /*
 |--------------------------------------------------------------------------

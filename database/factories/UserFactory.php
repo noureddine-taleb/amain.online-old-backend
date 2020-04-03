@@ -11,6 +11,6 @@ $factory->define(User::class, function (Faker $faker) {
         'phone' => $faker->phoneNumber,
         'dob' =>  $faker->dateTime(),
         'image' =>  $faker->unique()->imageUrl(),
-        'privileges' =>  $faker->numberBetween($min = 1, $max = 3),
+        'password' =>  $faker->password(),
     ];
 });

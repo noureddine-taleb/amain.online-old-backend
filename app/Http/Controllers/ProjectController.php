@@ -10,16 +10,28 @@ use App\Http\Resources\ProjectCollection;
 class ProjectController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
 
-        $this->validate($request, Project::indexRules());
+        $this->validate($this->request, Project::indexRules());
 
-        return response()->json( new ProjectCollection( Project::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
+        return response()->json( new ProjectCollection( Project::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 
@@ -42,16 +54,16 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
 
-        $this->validate($request, Project::createRules());
+        $this->validate($this->request, Project::createRules());
         
         $project = new Project;
 
-        $project->name= $request->name;
-        $project->desc = $request->desc;
-        $project->fees = $request->fees;
+        $project->name= $this->request->name;
+        $project->desc = $this->request->desc;
+        $project->fees = $this->request->fees;
         
         $project->save();
  
@@ -66,12 +78,12 @@ class ProjectController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
                         
         $project = Project::findOrFail($id);
 
-        $project->update( $request->only('name','desc','fees') );
+        $project->update( $this->request->only('name','desc','fees') );
 
         return response()->json([ 'message' =>'project edited successfully' ,'project' => $project],202);
        
@@ -80,21 +92,21 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
             
-        $this->validate($request, Project::updateRules());
+        $this->validate($this->request, Project::updateRules());
         
 
         $project= Project::findOrFail($id);
         
-        $project->name = $request->name;
-        $project->desc = $request->desc;
-        $project->fees = $request->fees;
+        $project->name = $this->request->name;
+        $project->desc = $this->request->desc;
+        $project->fees = $this->request->fees;
 
         $project->save();
 

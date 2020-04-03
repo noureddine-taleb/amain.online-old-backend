@@ -9,17 +9,29 @@ use App\Http\Resources\BillCollection;
 
 class BillController extends Controller
 {
-        /**
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
 
-        $this->validate($request, Bill::indexRules());
+        $this->validate($this->request, Bill::indexRules());
 
-        return response()->json( new BillCollection( Bill::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
+        return response()->json( new BillCollection( Bill::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 
@@ -42,16 +54,16 @@ class BillController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
         
-        $this->validate($request, Bill::createRules());
+        $this->validate($this->request, Bill::createRules());
                 
         $bill = new Bill;
 
-        $bill->project_id= $request->project_id;
-        $bill->user_id = $request->user_id;
-        $bill->weight = $request->weight;
+        $bill->project_id= $this->request->project_id;
+        $bill->user_id = $this->request->user_id;
+        $bill->weight = $this->request->weight;
         
         $bill->save();
  
@@ -65,12 +77,12 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
         
         $bill = Bill::findOrFail($id);
 
-        $bill->update( $request->only('project_id','user_id','weight') );
+        $bill->update( $this->request->only('project_id','user_id','weight') );
 
         return response()->json([ 'message' =>'bill edited successfully' ,'bill' => $bill],202);
         
@@ -83,16 +95,16 @@ class BillController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
 
-        $this->validate($request, Bill::updateRules());
+        $this->validate($this->request, Bill::updateRules());
         
         $bill= Bill::findOrFail($id);
         
-        $bill->project_id = $request->project_id;
-        $bill->user_id = $request->user_id;
-        $bill->weight = $request->weight;
+        $bill->project_id = $this->request->project_id;
+        $bill->user_id = $this->request->user_id;
+        $bill->weight = $this->request->weight;
 
         $bill->save();
 

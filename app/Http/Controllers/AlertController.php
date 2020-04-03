@@ -11,16 +11,28 @@ use App\Http\Resources\AlertCollection;
 class AlertController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
 
-        $this->validate($request, Alert::indexRules());
+        $this->validate($this->request, Alert::indexRules());
 
-        return response()->json( new AlertCollection( Alert::paginate( (int)( $request->page_size ?? env('PAGE_SIZE') ) )) );
+        return response()->json( new AlertCollection( Alert::paginate( (int)( $this->request->page_size ?? env('PAGE_SIZE') ) )) );
 
     }
 
@@ -43,15 +55,15 @@ class AlertController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-        $this->validate($request, Alert::createRules());
+        $this->validate($this->request, Alert::createRules());
 
         $alert = new Alert;
 
-        $alert->project_id= $request->project_id;
-        $alert->frequency = $request->frequency;
-        $alert->priority = $request->priority;
+        $alert->project_id= $this->request->project_id;
+        $alert->frequency = $this->request->frequency;
+        $alert->priority = $this->request->priority;
         
         $alert->save();
  
@@ -65,12 +77,12 @@ class AlertController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
 
         $alert = Alert::findOrFail($id);
 
-        $alert->update( $request->only('project_id','frequency','priority') );
+        $alert->update( $this->request->only('project_id','frequency','priority') );
 
         return response()->json([ 'message' =>'alert edited successfully' ,'alert' => $alert],202);
         
@@ -83,16 +95,16 @@ class AlertController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
 
-        $this->validate($request, Alert::updateRules());
+        $this->validate($this->request, Alert::updateRules());
         
         $alert= Alert::findOrFail($id);
         
-        $alert->project_id = $request->project_id;
-        $alert->priority = $request->priority;
-        $alert->frequency = $request->frequency;
+        $alert->project_id = $this->request->project_id;
+        $alert->priority = $this->request->priority;
+        $alert->frequency = $this->request->frequency;
 
         $alert->save();
 

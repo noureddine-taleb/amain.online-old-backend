@@ -19,7 +19,9 @@ class CreateUsersTable extends Migration
             $table->string('phone')->unique();
             $table->date('dob');
             $table->string('image')->unique();
-            $table->string('privileges')->enum(['normal','responsible','admin'])->default(1);
+            // $table->unsignedInteger('role_id')->default(1);
+                // $table->foreign('role_id')->references('id')->on('roles');
+            $table->text('password');
             $table->timestamps();
             $table->softDeletes();
         });

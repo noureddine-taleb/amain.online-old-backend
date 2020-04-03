@@ -1,10 +1,17 @@
 ->CRUD operations
 
-filtration pagination
+filtration 
+
+----> pagination
 
 ----> override default error handling
-remodel database
 
+add password check
+remember me feature
+remodel database
+acl like espocrm
+phpunit
+middleware for auth
 testing
 authentication
 

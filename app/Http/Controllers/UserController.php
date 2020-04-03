@@ -11,18 +11,30 @@ use App\Http\Resources\UserCollection;
 class UserController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    private $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         //
         // $users = User::all();
 
-        $this->validate($request, User::indexRules());
+        $this->validate($this->request, User::indexRules());
 
-        return response()->json( new UserCollection( User::paginate( (int)($request->page_size ?? env('PAGE_SIZE')) ) ) );
+        return response()->json( new UserCollection( User::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
 
     }
 
@@ -45,18 +57,18 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
         
-        $this->validate($request, User::createRules());
+        $this->validate($this->request, User::createRules());
 
         $user = new User;
 
-        $user->name= $request->name;
-        $user->image = $request->image;
-        $user->dob = $request->dob;
-        $user->phone = $request->phone;
-        $request->privileges && $user->privileges = $request->privileges;
+        $user->name= $this->request->name;
+        $user->image = $this->request->image;
+        $user->dob = $this->request->dob;
+        $user->phone = $this->request->phone;
+        $this->request->privileges && $user->privileges = $this->request->privileges;
         
         $user->save();
  
@@ -70,12 +82,12 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit($id)
     {
                                 
         $project = Project::findOrFail($id);
 
-        $project->update( $request->only('name','image','dob','phone','privileges') );
+        $project->update( $this->request->only('name','image','dob','phone','privileges') );
 
         return response()->json([ 'message' =>'project edited successfully' ,'project' => $project],202);
        
@@ -84,22 +96,22 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request  request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update($id)
     {
 
-        $this->validate($request, User::updateRules());
+        $this->validate($this->request, User::updateRules());
                                         
         $user= User::findOrFail($id);
         
-        $user->name= $request->name;
-        $user->image = $request->image;
-        $user->dob = $request->dob;
-        $user->phone = $request->phone;
-        $request->privileges && $user->privileges = $request->privileges;
+        $user->name= $this->request->name;
+        $user->image = $this->request->image;
+        $user->dob = $this->request->dob;
+        $user->phone = $this->request->phone;
+        $this->request->privileges && $user->privileges = $this->request->privileges;
 
         $user->save();
 
