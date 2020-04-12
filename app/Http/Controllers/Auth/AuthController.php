@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\User;
 use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -41,42 +42,39 @@ class AuthController extends Controller
     // ===========================================================================================================================================
     // ================================================register routine ========================================================================
     // ==========================================================================================================================================
-    // public function register(Request $request)
-    // {
-    //     //validate incoming request 
-    //     $this->validate($request, [
-    //         'firstName' => 'required|string',
-    //         'lastName' => 'required|string',
-    //         'city' => 'required|string',
-    //         'address' => 'required|string',
-    //         'phone' => 'required|string',
-    //         'email' => 'required|email|unique:users',
-    //         'password' => 'required|confirmed',
-    //     ]);
+    public function register(Request $request)
+    {
+        //validate incoming request 
+        // $this->validate($request, [
+        //     'name'=> 'required|string',
+        //     'phone'=> 'required|string|unique:users',
+        //     'dob'=> 'required|string',
+        //     'image'=> 'required|string',
+        //     'password'=> 'required|string|confirmed',
+        // ]);
 
-    //     try {
+        try {
            
-    //         $user = new User;
-    //         $user->firstName = $request->input('firstName');
-    //         $user->lastName = $request->input('lastName');
-    //         $user->city = $request->input('city');
-    //         $user->address = $request->input('address');
-    //         $user->phone = $request->input('phone');
-    //         $user->email = $request->input('email');
-    //         $plainPassword = $request->input('password');
-    //         $user->password = app('hash')->make($plainPassword);
+            // $user = new User;
+            // $user->name = $request->input('name');
+            // $user->phone = $request->input('phone');
+            // $user->dob = $request->input('dob');
+            // $file = $request->file('image')->getClientOriginalName();
+            $request->file('image')->move('./upload', 'file.jpeg');
+            // $user->image = 'file.jpeg';
+            // $plainPassword = $request->input('password');
+            // $user->password = app('hash')->make($plainPassword);
 
-    //         $user->save();
+            // $user->save();
 
-    //     } catch (\Exception $e) {
-    //         //return error message
-    //         return response()->json(['error' => 'User Registration Failed!' . $e->getMessage() ], 409);
-    //     }
+        } catch (\Exception $e) {
+            
+            abort(409,'User Registration Failed!' . $e->getMessage());
+        }
 
-    //     //return successful response
-    //     return response()->json(['registration was successfull' => 1], 201);
-
-    // }
+        //return successful response
+        return response()->json(['message' => 'registration was successfull'], 201);
+    }
 
     // ===========================================================================================================================================
     // ================================================login routine ========================================================================
@@ -93,7 +91,7 @@ class AuthController extends Controller
             $phone = $this->request->input('phone');
             $user = User::where('phone',$phone)->firstOrFail();
 
-            if ( env('APP_DEBUG') || Hash::check($password, $user->password)) {
+            if (Hash::check($password, $user->password)) {
                 
                 return response()->json([
                     'token' => $this->jwt($user)

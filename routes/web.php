@@ -34,11 +34,8 @@ $router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
     //========================================== <--- AUTH end points---> ==================================================
     
     //auth routes
-    $router->group([ 'namespace' => 'Auth' ],function() use ($router){
-        
-        // $router->post('register', 'AuthController@register');
-        $router->post('login', 'AuthController@login');
-    });
+    $router->post('register', 'Auth\AuthController@register');
+    $router->post('login', 'Auth\AuthController@login');
     
     //========================================== <--- RESOURCES end points---> ==================================================
     
