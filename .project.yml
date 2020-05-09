@@ -1,0 +1,31 @@
+TODO :
+
+
+IN PROGRESS :
+    - acl like espocrm
+    - remodel database
+
+DONE :
+    - customize validator response
+    - move authcontroller to user controller
+    - make sure foreign key field are populated
+    - deprecate alert controller (make project overwhelming complexe)
+    - authentication
+    - validate file in upload
+    - make db table of response messages with status code
+    - change message to feedback
+    - add password check
+    - CRUD operations
+    - override default error handling
+
+COMPLEMENT :
+    - allow cors in webserver level and delete cors middleware
+    - report exceptions
+    - testing
+    - remember me feature
+    - terms and conditions page
+    - store file in front
+    - lint and code style
+    - phpunit
+    - cach app in prod
+    - ci/branch features

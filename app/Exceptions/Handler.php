@@ -52,15 +52,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-
         // return parent::render($request, $exception);
-
         if (method_exists($e, 'render')) {
             return $e->render($request);
         } elseif ($e instanceof Responsable) {
             return $e->toResponse($request);
         }
-
         if ($e instanceof HttpResponseException) {
             return $e->getResponse();
         } elseif ($e instanceof ModelNotFoundException) {
@@ -70,21 +67,15 @@ class Handler extends ExceptionHandler
         } elseif ($e instanceof ValidationException && $e->getResponse()) {
             return $e->getResponse();
         }
-
         $fe = FlattenException::create($e);
-
         $statusCode = $fe->getStatusCode();
-        
         // $error['error'] = Response::$statusTexts[$statusCode];
-        $error['error'] = $e->getMessage();      
-        
+        $error['errors'] = [$e->getMessage()];      
         if (env('APP_DEBUG')) 
         {    
             $error['file'] = $e->getFile() . ':' . $e->getLine();    
             $error['trace'] = explode("\n", $e->getTraceAsString());  
         }  
-        
         return response()->json($error, $statusCode, [], JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
-    
     }
 }

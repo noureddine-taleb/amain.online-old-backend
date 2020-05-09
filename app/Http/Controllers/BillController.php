@@ -31,7 +31,15 @@ class BillController extends Controller
 
         $this->validate($this->request, Bill::indexRules());
 
-        return response()->json( new BillCollection( Bill::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
+        $bills = Bill::all();
+        foreach ($bills as $bill) {
+            $bill->user_id = $bill->user();
+            $bill->project_id = $bill->project();
+            $bill->payment_id = $bill->payment();
+        }
+
+        return $this->response(200,"Bill", $bills );
+
 
     }
 
@@ -46,7 +54,8 @@ class BillController extends Controller
         //
         $bill = Bill::findOrFail($id);
 
-        return response()->json($bill);
+        return $this->response(200,"Bill", $bill );
+
     }
 
     /**
@@ -67,7 +76,8 @@ class BillController extends Controller
         
         $bill->save();
  
-        return response()->json([ 'message' =>'bill created successfully' ,'bill' => $bill],201);
+        return $this->response(201,"Bill", $bill );
+
 
     }
 
@@ -84,7 +94,8 @@ class BillController extends Controller
 
         $bill->update( $this->request->only('project_id','user_id','weight') );
 
-        return response()->json([ 'message' =>'bill edited successfully' ,'bill' => $bill],202);
+        return $this->response(202,"Bill", $bill );
+
         
     }
 
@@ -108,7 +119,8 @@ class BillController extends Controller
 
         $bill->save();
 
-        return response()->json([ 'message' =>'bill updated successfully' ,'bill' => $bill],202);
+        return $this->response(202, "Bill", $bill);
+
 
     }
 
@@ -123,8 +135,9 @@ class BillController extends Controller
                 
         $bill = Bill::findOrFail($id);
         $bill->delete();
-
-         return response()->json([ 'message' =>'bill removed successfully'],202);
+        
+        return $this->response(207, "Bill");
+        //  return response()->json([ 'message' =>'bill removed successfully'],202);
 
     }
     /**
@@ -137,7 +150,8 @@ class BillController extends Controller
     {
         $payment = Bill::findOrFail($id)->payment();
 
-        return response()->json($payment);
+        return $this->response(200,"Bill", $payment );
+
     }
     /**
      * Remove the specified resource from storage.
@@ -149,7 +163,7 @@ class BillController extends Controller
     {
         $user = Bill::findOrFail($id)->user();
 
-        return response()->json($user);
+        return $this->response(200,"Bill", $user );
     }
     /**
      * Remove the specified resource from storage.
@@ -161,6 +175,7 @@ class BillController extends Controller
     {
         $project = Bill::findOrFail($id)->project();
 
-        return response()->json($project);
+        return $this->response(200,"Bill", $project );
+
     }
 }

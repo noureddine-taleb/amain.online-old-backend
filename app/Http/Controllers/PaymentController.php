@@ -31,7 +31,11 @@ class PaymentController extends Controller
 
         $this->validate($this->request, Payment::indexRules());
 
-        return response()->json( new PaymentCollection( Payment::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
+        $payments = Payment::all();
+        foreach ($payments as $payment) {
+            $payment->bill_id = $payment->bill();
+        }
+        return $this->response(200,"Payment", $payments );
 
     }
 
@@ -46,7 +50,8 @@ class PaymentController extends Controller
         //
         $payment = Payment::findOrFail($id);
 
-        return response()->json($payment);
+        return $this->response(200,"Payment", $payment );
+
     }
 
     /**
@@ -65,7 +70,8 @@ class PaymentController extends Controller
         
         $payment->save();
  
-        return response()->json([ 'message' =>'payment created successfully' ,'payment' => $payment],201);
+        return $this->response(201,"Payment", $payment );
+
 
     }
 
@@ -82,7 +88,9 @@ class PaymentController extends Controller
 
         $payment->update( $this->request->only('bill_id') );
 
-        return response()->json([ 'message' =>'payment edited successfully' ,'payment' => $payment],202);
+
+        return $this->response(202,"Payment", $payment );
+
        
     }
 
@@ -104,7 +112,8 @@ class PaymentController extends Controller
 
         $payment->save();
 
-        return response()->json([ 'message' =>'payment updated successfully' ,'payment' => $payment],202);
+        return $this->response(202,"Payment", $payment );
+
 
     }
 
@@ -120,7 +129,8 @@ class PaymentController extends Controller
         $payment = Payment::findOrFail($id);
         $payment->delete();
 
-         return response()->json([ 'message' =>'payment removed successfully'],202);
+        return $this->response(207,"Payment", $payment );
+
 
     }
     /**
@@ -134,7 +144,8 @@ class PaymentController extends Controller
 
         $bill = Payment::findOrFail($id)->bill();
         
-        return response()->json($bill);
+        return $this->response(200,"Payment", $bill );
+
 
     }
 }

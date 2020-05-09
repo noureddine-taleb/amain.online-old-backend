@@ -25,7 +25,7 @@ class JWTMiddleware
         if(!$token) {
             return response()->json([
                 'error' => 'Token not provided.'
-            ], 400);
+            ], 401);
         }
         //check token 's validation
         try {
@@ -33,11 +33,11 @@ class JWTMiddleware
         } catch(ExpiredException $e) {
             return response()->json([
                 'error' => 'Provided token is expired.'
-            ], 400);
+            ], 401);
         } catch(Exception $e) {
             return response()->json([
                 'error' => 'An error while decoding token.'
-            ], 400);
+            ], 401);
         }
 
         //get the authorized user

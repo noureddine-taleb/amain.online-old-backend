@@ -4,9 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;        
 use App\User;
-
-use App\Http\Resources\User as UserResource;
-use App\Http\Resources\UserCollection;
+use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -22,6 +21,71 @@ class UserController extends Controller
         $this->request = $request;
     }
 
+    // auth handlers
+    /**
+     * generate jwt token.
+     * @param User
+     * @return Firebase\JWT\JWT
+     */
+    private function jwt(User $user) 
+    {
+        $payload = [
+            'iss' => "lumen-jwt", // Issuer of the token
+            'sub' => $user->id, // Subject of the token
+            'iat' => time(), // Time when JWT was issued. 
+            'exp' => time() + env("JWT_EXP") // Expiration time
+        ];
+        return JWT::encode($payload, env('JWT_SECRET'));
+    }
+
+    /**
+     * upload file
+     *
+     * @return PATH
+     */
+    public function upload()
+    {
+        $this->validate($this->request, [
+            'image'=> 'required',
+        ]);
+        $file = date("F j, Y, g:i a")." --" . $this->request->file('image')->getClientOriginalName();
+        $this->request->file('image')->move(env("APP_UPLOAD_DIR"), $file );
+        return $this->response(201,"File", $file);
+    }
+
+    /**
+     * Auth user
+     * @param User
+     * @return JWT
+     */
+    public function login() 
+    {
+        //validate incoming request 
+        $this->validate($this->request, User::loginRules());
+
+        $password = $this->request->input('password');
+        $phone = $this->request->input('phone');
+        $user = User::where('phone',$phone)->firstOrFail();
+        //not implemented
+        $rememberme = $this->request->input('rememberme');
+
+        if (Hash::check($password, $user->password)) {
+            return $this->response(201,"User", $this->jwt($user));
+        }
+        abort(401,'Phone number or password is wrong.');
+    }
+
+    /**
+     * Reresh token from user space
+     *
+     * @return JWT
+     */
+    public function refresh()
+    {
+        return $this->response(202,"User", $this->jwt($this->request->user));
+    }
+
+    //resource cruds
     /**
      * Display a listing of the resource.
      *
@@ -29,13 +93,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
-        // $users = User::all();
-
         $this->validate($this->request, User::indexRules());
-
-        return response()->json( new UserCollection( User::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
-
+        
+        $users = User::all(); 
+        return $this->response(200,"User", $users );
     }
 
     /**
@@ -49,7 +110,8 @@ class UserController extends Controller
         //
         $user = User::findOrFail($id);
 
-        return response()->json($user);
+        return $this->response(200,"User", $user );
+
     }
 
     /**
@@ -59,21 +121,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        
         $this->validate($this->request, User::createRules());
-
-        $user = new User;
-
-        $user->name= $this->request->name;
-        $user->image = $this->request->image;
-        $user->dob = $this->request->dob;
-        $user->phone = $this->request->phone;
-        $this->request->privileges && $user->privileges = $this->request->privileges;
         
-        $user->save();
- 
-        return response()->json([ 'message' =>'user created successfully' ,'user' => $user],201);
+        $user = new User;
+        $user->name = $this->request->name;
+        $user->phone = $this->request->phone;
+        $user->dob = $this->request->dob;
+        $user->image = $this->request->image;
+        $plainPassword = $this->request->password;
+        $user->password = app('hash')->make($plainPassword);
 
+        $user->save();
+
+        //return successful response
+        return $this->response(201,"User", $user);
     }
 
     /**
@@ -89,7 +150,8 @@ class UserController extends Controller
 
         $project->update( $this->request->only('name','image','dob','phone','privileges') );
 
-        return response()->json([ 'message' =>'project edited successfully' ,'project' => $project],202);
+        return $this->response(202,"User", $user );
+
        
     }
 
@@ -115,7 +177,8 @@ class UserController extends Controller
 
         $user->save();
 
-        return response()->json([ 'message' =>'user updated successfully' ,'user' => $user],202);
+        return $this->response(202,"User", $user );
+
 
     }
 
@@ -131,7 +194,9 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-         return response()->json([ 'message' =>'user removed successfully'],202);
+        //  return response()->json([ 'message' =>'user removed successfully'],202);
+        return $this->response(207,"User", $user );
+
 
     }
     /**
@@ -144,6 +209,7 @@ class UserController extends Controller
     {
         $bills = User::findOrFail($id)->bills();
 
-        return response()->json($bills);
+        return $this->response(200,"User", $bills );
+
     }
 }

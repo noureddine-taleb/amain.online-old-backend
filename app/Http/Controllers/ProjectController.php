@@ -28,11 +28,13 @@ class ProjectController extends Controller
      */
     public function index()
     {
-
         $this->validate($this->request, Project::indexRules());
 
-        return response()->json( new ProjectCollection( Project::paginate( (int)($this->request->page_size ?? env('PAGE_SIZE')) ) ) );
-
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            $project->bills_count = $project->bills()->count();
+        }
+        return $this->response(200,"Project", $projects );
     }
 
     /**
@@ -43,10 +45,9 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        //
         $project = Project::findOrFail($id);
 
-        return response()->json($project);
+        return $this->response(200,"Project", $project );
     }
 
     /**
@@ -56,21 +57,18 @@ class ProjectController extends Controller
      */
     public function create()
     {
-
         $this->validate($this->request, Project::createRules());
         
         $project = new Project;
 
-        $project->name= $this->request->name;
+        $project->name = $this->request->name;
         $project->desc = $this->request->desc;
         $project->fees = $this->request->fees;
         
         $project->save();
  
-        return response()->json([ 'message' =>'project created successfully' ,'project' => $project],201);
-
+        return $this->response(201,"Project", $project );
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -79,14 +77,12 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
-                        
+    {               
         $project = Project::findOrFail($id);
 
         $project->update( $this->request->only('name','desc','fees') );
 
-        return response()->json([ 'message' =>'project edited successfully' ,'project' => $project],202);
-       
+        return $this->response(202,"Project", $project );
     }
 
     /**
@@ -97,11 +93,9 @@ class ProjectController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update($id)
-    {
-            
+    { 
         $this->validate($this->request, Project::updateRules());
         
-
         $project= Project::findOrFail($id);
         
         $project->name = $this->request->name;
@@ -110,8 +104,7 @@ class ProjectController extends Controller
 
         $project->save();
 
-        return response()->json([ 'message' =>'project updated successfully' ,'project' => $project],202);
-
+        return $this->response(202,"Project", $project );
     }
 
     /**
@@ -126,8 +119,7 @@ class ProjectController extends Controller
         $project = Project::findOrFail($id);
         $project->delete();
 
-         return response()->json([ 'message' =>'project removed successfully'],202);
-
+        return $this->response(207,"Project", $project );
     }
     /**
      * Remove the specified resource from storage.
@@ -139,18 +131,6 @@ class ProjectController extends Controller
     {
         $bills = Project::findOrFail($id)->bills();
         
-        return response()->json($bills);
-    }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function alerts($id)
-    {
-        $alerts = Project::findOrFail($id)->alerts();
-        
-        return response()->json($alerts);
+        return $this->response(200,"Project", $bills );
     }
 }

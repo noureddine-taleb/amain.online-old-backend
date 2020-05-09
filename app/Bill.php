@@ -86,7 +86,7 @@ class Bill extends Model
         return [
             "project_id" => "required|exists:projects,id",
             "user_id"  => "required|exists:users,id",
-            "weight"   => "required|integer",
+            "weight"   => "required|numeric",
         ];
 
     }

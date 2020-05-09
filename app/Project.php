@@ -27,23 +27,10 @@ class Project extends Model
         parent::boot();
 
         static::deleting(function($project) {
-            foreach ($project->alerts() as $alert) {
-                $alert->delete();
-            }
-            
             foreach ($project->bills() as $bill) {
                 $bill->delete();
             }
         });
-    }   
-    /**
-    * Define relationship with alert model
-    *
-    * @return \Illuminate\Database\Eloquent\Relations\HasMany
-    */
-    public function alerts()
-    {
-        return $this->hasMany('App\Alert')->get();
     }
 
     /**
@@ -78,7 +65,7 @@ class Project extends Model
         
         return [
             "name" => "required|max:255",
-            "desc" => "required",
+            "desc" => "required|min:20",
             "fees" => "required|numeric",
         ];
 

@@ -47,6 +47,20 @@ class User extends Model
     *
     * @return array
     */
+    public static function loginRules(){
+        
+        return [
+            'phone' => 'required',
+            'password' => 'required',
+            'rememberme' => 'required',
+        ];
+    }
+
+    /**
+    * Define input rules
+    *
+    * @return array
+    */
     public static function indexRules(){
         
         return [
@@ -66,10 +80,10 @@ class User extends Model
             "name" => "required|max:255",
             "image" => "required",
             "dob" => "required|date",
-            "phone" => "required|max:255",
+            "phone" => "required|max:10|unique:users",
             "privileges" => "nullable|min:1|max:3",
+            'password'=> 'required|confirmed',
         ];
-
     }
     /**
     * Define input rules

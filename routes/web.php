@@ -14,41 +14,27 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-// function resource($uri, $controller)
-// {
-// 	//$verbs = array('GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE');
-// 	global $route;
-// 	$route->get($uri, 'App\Http\Controllers\\'.$controller.'@index');
-// 	$route->get($uri.'/create', 'App\Http\Controllers\\'.$controller.'@create');
-// 	$route->post($uri, 'App\Http\Controllers\\'.$controller.'@store');
-// 	$route->get($uri.'/{id}', 'App\Http\Controllers\\'.$controller.'@show');
-// 	$route->get($uri.'/{id}/edit', 'App\Http\Controllers\\'.$controller.'@edit');
-// 	$route->put($uri.'/{id}', 'App\Http\Controllers\\'.$controller.'@update');
-// 	$route->patch($uri.'/{id}', 'App\Http\Controllers\\'.$controller.'@update');
-// 	$route->delete($uri.'/{id}', 'App\Http\Controllers\\'.$controller.'@destroy');
-// }
 
-
-$router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
+$router->group([ 'prefix' => 'api/v1' ],function() use ($router){
     
     //========================================== <--- AUTH end points---> ==================================================
     
     //auth routes
-    $router->post('register', 'Auth\AuthController@register');
-    $router->post('login', 'Auth\AuthController@login');
+    $router->post("users",	"UserController@create");
+    $router->post("login", "UserController@login");
+    $router->post("upload", "UserController@upload");
     
     //========================================== <--- RESOURCES end points---> ==================================================
     
-    $router->group([ 'middleware' => ['jwt.auth', 'acl.auth'] ],function() use ($router){
+    $router->group(["middleware" => ["jwt.auth", "acl.auth"] ],function() use ($router){
         
-        $router->get('refresh', 'Auth\AuthController@refresh');
+        $router->get("refresh", "Auth\AuthController@refresh");
         //-------------------------------------------project CRUD-------------------------------------------
         //fetch project
         $router->get( "projects",			                        "ProjectController@index");
         $router->get( "projects/{id}",		                        "ProjectController@show");
         //relations of resource with others
-        $router->get( "projects/{id}/relationships/bills",          "ProjectController@bills");
-        $router->get( "projects/{id}/relationships/alerts",         "ProjectController@alerts");
+        $router->get( "projects/{id}/bills",                        "ProjectController@bills");
         //create new one        
         $router->post( "projects",			                        "ProjectController@create");
         //update a project      
@@ -62,9 +48,7 @@ $router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
         $router->get( "users",				                        "UserController@index");
         $router->get( "users/{id}",			                        "UserController@show");
         //relations of resource with others
-        $router->get( "users/{id}/relationships/bills",			    "UserController@bills");
-        //create new one        
-        $router->post( "users",				                        "UserController@create");
+        $router->get( "users/{id}/bills",           			    "UserController@bills");
         //update a user                     
         $router->put( "users/{id}",			                        "UserController@update");
         $router->patch( "users/{id}",		                        "UserController@edit");
@@ -76,9 +60,9 @@ $router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
         $router->get( "bills",				                        "BillController@index");
         $router->get( "bills/{id}",			                        "BillController@show");
         //relations of resource with others
-        $router->get( "bills/{id}/relationships/payment",		    "BillController@payment");
-        $router->get( "bills/{id}/relationships/user",		        "BillController@user");
-        $router->get( "bills/{id}/relationships/project",		    "BillController@project");
+        $router->get( "bills/{id}/payment",         		        "BillController@payment");
+        $router->get( "bills/{id}/user",            		        "BillController@user");
+        $router->get( "bills/{id}/project",         		        "BillController@project");
         //create new one        
         $router->post( "bills",				                        "BillController@create");
         //update a bill                     
@@ -92,7 +76,7 @@ $router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
         $router->get( "payments",			                        "PaymentController@index");
         $router->get( "payments/{id}",		                        "PaymentController@show");
         //relations of resource with others
-        $router->get( "payments/{id}/relationships/bill",		    "PaymentController@bill");
+        $router->get( "payments/{id}/bill",         		        "PaymentController@bill");
         //create new one        
         $router->post( "payments",			                        "PaymentController@create");
         //update a payment                      
@@ -100,20 +84,5 @@ $router->group([ /*'prefix' => 'api/v1',*/ ],function() use ($router){
         $router->patch( "payments/{id}",	                        "PaymentController@edit");
         //delete payment                        
         $router->delete( "payments/{id}",	                        "PaymentController@destroy");
-
-        //-------------------------------------------alert CRUD-------------------------------------------
-        //fetch alert       
-        $router->get( "alerts",				                        "AlertController@index");
-        $router->get( "alerts/{id}",		                        "AlertController@show");
-        //relations of resource with others
-        $router->get( "alerts/{id}/relationships/project",		    "AlertController@project");
-        //create new one        
-        $router->post( "alerts",			                        "AlertController@create");
-        //update a alert                        
-        $router->put( "alerts/{id}",		                        "AlertController@update");
-        $router->patch( "alerts/{id}",		                        "AlertController@edit");
-        //delete alert                      
-        $router->delete( "alerts/{id}",		                        "AlertController@destroy");
-
     });
 });
