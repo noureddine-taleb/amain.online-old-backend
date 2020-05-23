@@ -46,7 +46,7 @@ class UserController extends Controller
     public function upload()
     {
         $this->validate($this->request, [
-            'image'=> 'required',
+            'image'=> 'required|mimes:jpeg,jpg',
         ]);
         $file = date("F j, Y, g:i a")." --" . $this->request->file('image')->getClientOriginalName();
         $this->request->file('image')->move(env("APP_UPLOAD_DIR"), $file );
@@ -122,12 +122,12 @@ class UserController extends Controller
     public function create()
     {
         $this->validate($this->request, User::createRules());
-        
+
         $user = new User;
         $user->name = $this->request->name;
         $user->phone = $this->request->phone;
         $user->dob = $this->request->dob;
-        $user->image = $this->request->image;
+        $user->image = $this->request->image_path;
         $plainPassword = $this->request->password;
         $user->password = app('hash')->make($plainPassword);
 
@@ -208,7 +208,11 @@ class UserController extends Controller
     public function bills($id)
     {
         $bills = User::findOrFail($id)->bills();
-
+        foreach ($bills as $bill) {
+            $bill->project_id = $bill->project();
+            $bill->user_id = $bill->user();
+            $bill->payment_id = $bill->payment();
+        }
         return $this->response(200,"User", $bills );
 
     }

@@ -23,6 +23,7 @@ $router->group([ 'prefix' => 'api/v1' ],function() use ($router){
     $router->post("users",	"UserController@create");
     $router->post("login", "UserController@login");
     $router->post("upload", "UserController@upload");
+    $router->get( "bills/pdf/{id}",			                        "BillController@show");
     
     //========================================== <--- RESOURCES end points---> ==================================================
     

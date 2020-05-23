@@ -28,5 +28,5 @@ DEVOPS Methodology:
             -master will contain current release
             -develop used for developpement and testing and feature creation
         -develop is the only branch opened for commits
-        -use tags to versioning (linux kernel convention)
+        -use tags to versioning (linux kernel convention) <major>,<minor>,<patch>
         -use commits convention (that include emojis)

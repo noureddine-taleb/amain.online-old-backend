@@ -22,4 +22,8 @@ class Controller extends BaseController
         }
         return response()->json(["errors" =>$errs], 422);
     }
+    
+    protected function errorResponse(array $errs){
+        return response()->json(["errors" =>$errs], 422);
+    }
 }

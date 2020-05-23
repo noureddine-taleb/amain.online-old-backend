@@ -4,8 +4,11 @@ TODO :
 IN PROGRESS :
     - acl like espocrm
     - remodel database
+    - support ping via head method
 
 DONE :
+    - file validator
+    - check terms and condition is true
     - customize validator response
     - move authcontroller to user controller
     - make sure foreign key field are populated
@@ -28,4 +31,6 @@ COMPLEMENT :
     - lint and code style
     - phpunit
     - cach app in prod
+    - cache api
+    - deno
     - ci/branch features

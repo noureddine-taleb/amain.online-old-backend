@@ -125,13 +125,10 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-                
         $payment = Payment::findOrFail($id);
         $payment->delete();
 
         return $this->response(207,"Payment", $payment );
-
-
     }
     /**
      * Remove the specified resource from storage.

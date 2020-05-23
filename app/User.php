@@ -83,6 +83,12 @@ class User extends Model
             "phone" => "required|max:10|unique:users",
             "privileges" => "nullable|min:1|max:3",
             'password'=> 'required|confirmed',
+            'terms_and_conditions'=> [
+                'required',
+                function($atr, $v, $fail){
+                    if($v != true) $fail("you should accept our terms");
+                }
+            ],
         ];
     }
     /**

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Bill;
 use App\Http\Resources\Bill as BillResource;
 use App\Http\Resources\BillCollection;
+use Barryvdh\DomPDF\Facade as PDF;
 
 class BillController extends Controller
 {
@@ -28,7 +29,6 @@ class BillController extends Controller
      */
     public function index()
     {
-
         $this->validate($this->request, Bill::indexRules());
 
         $bills = Bill::all();
@@ -37,10 +37,7 @@ class BillController extends Controller
             $bill->project_id = $bill->project();
             $bill->payment_id = $bill->payment();
         }
-
         return $this->response(200,"Bill", $bills );
-
-
     }
 
     /**
@@ -51,11 +48,24 @@ class BillController extends Controller
      */
     public function show($id)
     {
-        //
         $bill = Bill::findOrFail($id);
+        
+        if($this->request->pdf){
+            $data = $bill;
+            $data['user_id'] = $bill->user();
+            $data['project_id'] = $bill->project();
+            $data['date'] = date('l jS \of F Y');
+            $data['deadline'] = date('l jS \of F Y', mktime(0, 0, 0, date("m"), date("d")+15, date("Y")) );
+            $data['issue_date'] = date('l jS \of F Y', strtotime($data['created_at']) );
+            $data['consumption'] = $data['weight'] * $data['project_id']['fees'];
+            $data['fees'] = 10;
+            $data['penalty'] = 0;
+            $data['total'] = $data['consumption'] + $data['fees'] + $data['penalty'];
 
+            $pdf = PDF::loadView('pdf/bill', compact('data'));
+            return $pdf->stream('invoice.pdf');
+        }
         return $this->response(200,"Bill", $bill );
-
     }
 
     /**
@@ -65,7 +75,6 @@ class BillController extends Controller
      */
     public function create()
     {
-        
         $this->validate($this->request, Bill::createRules());
                 
         $bill = new Bill;
