@@ -10,7 +10,12 @@
     Header always add Access-Control-Allow-Methods: "*"
     Header always add Access-Control-Allow-Headers: "*"
     
+    #preflight
     RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ - [R=204,L]
+    
+    #ping
+    RewriteCond %{REQUEST_METHOD} HEAD
     RewriteRule ^(.*)$ - [R=204,L]
 
     # Handle Authorization Header

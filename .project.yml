@@ -4,10 +4,10 @@ TODO :
 
 
 IN PROGRESS :
-    - migrate cors to server
-    - migrate head method to server
 
 DONE :
+    - migrate head method to server
+    - migrate cors to server
     - simple role system (admin/ordinary)
     - secure api
     - support ping via head method
