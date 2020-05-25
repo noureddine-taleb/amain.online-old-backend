@@ -48,6 +48,16 @@ class BillController extends Controller
      */
     public function show($id)
     {
+       if(!$this->request->user->is_admin){
+
+           $bills =  $this->request->user->bills();
+           $flag = false;
+           foreach ($bills as $b) {
+               if( $b->id == $id) $flag = true;
+           }
+           if(!$flag) return response()->json([ "errors" => ["permission denied"] ], 403);
+       }
+       
         $bill = Bill::findOrFail($id);
         
         if($this->request->pdf){

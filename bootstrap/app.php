@@ -64,16 +64,12 @@ $app->singleton(
 | route or middleware that'll be assigned to some specific routes.
 |
 */
-
-$app->middleware([
-    App\Http\Middleware\CORSMiddleware::class
-]);
-
 $app->routeMiddleware([
     'jwt.auth' => App\Http\Middleware\JWTMiddleware::class,
 ]);
+
 $app->routeMiddleware([
-    'acl.auth' => App\Http\Middleware\JWTMiddleware::class,
+    'acl.auth' => App\Http\Middleware\ACLMiddleware::class,
 ]);
 
 /*

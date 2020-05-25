@@ -1,12 +1,16 @@
 TODO :
+    - acl like espocrm
+    - remodel database
 
 
 IN PROGRESS :
-    - acl like espocrm
-    - remodel database
-    - support ping via head method
+    - migrate cors to server
+    - migrate head method to server
 
 DONE :
+    - simple role system (admin/ordinary)
+    - secure api
+    - support ping via head method
     - file validator
     - check terms and condition is true
     - customize validator response

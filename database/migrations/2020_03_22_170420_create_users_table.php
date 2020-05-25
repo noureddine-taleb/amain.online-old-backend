@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
                 // $table->foreign('role_id')->references('id')->on('roles');
             $table->text('password');
             $table->text('cookie')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

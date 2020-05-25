@@ -20,6 +20,11 @@ class CreateResponsesTable extends Migration
             $table->string('response');
             $table->timestamps();
         });
+
+        DB::insert('insert into responses (status, tag, response) values (?, ?, ?)', [200, 'success', "done successfully"]);
+        DB::insert('insert into responses (status, tag, response) values (?, ?, ?)', [201, 'created', "created successfully"]);
+        DB::insert('insert into responses (status, tag, response) values (?, ?, ?)', [202, 'accepted', "accepted successfully"]);
+        DB::insert('insert into responses (status, tag, response) values (?, ?, ?)', [207, 'delete', "deleted successfully"]);
     }
 
     /**

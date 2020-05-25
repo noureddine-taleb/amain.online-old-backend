@@ -12,5 +12,6 @@ $factory->define(User::class, function (Faker $faker) {
         'dob' =>  $faker->dateTime(),
         'image' =>  $faker->unique()->imageUrl(),
         'password' =>  $faker->password(),
+        'is_admin' =>  $faker->boolean(),
     ];
 });

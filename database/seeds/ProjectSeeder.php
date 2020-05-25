@@ -13,6 +13,6 @@ class ProjectSeeder extends Seeder
     {
         //
 
-        factory(App\Project::class, 50)->create();
+        factory(App\Project::class, 5)->create();
     }
 }

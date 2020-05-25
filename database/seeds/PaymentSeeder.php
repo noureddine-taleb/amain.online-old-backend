@@ -13,6 +13,6 @@ class PaymentSeeder extends Seeder
     {
         //
 
-        factory(App\Payment::class, 279)->create();
+        factory(App\Payment::class, 250)->create();
     }
 }

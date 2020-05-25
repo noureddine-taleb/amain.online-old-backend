@@ -11,14 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        Schema::disableForeignKeyConstraints();
+        // Schema::disableForeignKeyConstraints();
 
         $this->call([
             UserSeeder::class,
-            BillSeeder::class,
             ProjectSeeder::class,
+            BillSeeder::class,
             PaymentSeeder::class,
         ]);
-        Schema::enableForeignKeyConstraints();
+        // Schema::enableForeignKeyConstraints();
     }
 }

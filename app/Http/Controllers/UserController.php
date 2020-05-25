@@ -70,7 +70,7 @@ class UserController extends Controller
         $rememberme = $this->request->input('rememberme');
 
         if (Hash::check($password, $user->password)) {
-            return $this->response(201,"User", $this->jwt($user));
+            return $this->response(201,"User", ['token' => $this->jwt($user), 'user' => $user] );
         }
         abort(401,'Phone number or password is wrong.');
     }
@@ -207,6 +207,11 @@ class UserController extends Controller
      */
     public function bills($id)
     {
+        if(!$this->request->user->is_admin){
+
+            if($this->request->user->id != $id) return response()->json([ "errors" => ["permission denied"] ], 403);
+        }
+        
         $bills = User::findOrFail($id)->bills();
         foreach ($bills as $bill) {
             $bill->project_id = $bill->project();

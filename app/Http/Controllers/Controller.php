@@ -20,10 +20,10 @@ class Controller extends BaseController
                 $errs[] = $field . " : " . $value;
             }
         }
-        return response()->json(["errors" =>$errs], 422);
+        return response()->json(["errors" => $errs], 422);
     }
     
     protected function errorResponse(array $errs){
-        return response()->json(["errors" =>$errs], 422);
+        return response()->json(["errors" => $errs], 422);
     }
 }

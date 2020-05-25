@@ -5,6 +5,14 @@
 
     RewriteEngine On
 
+    # CORS HANDLER
+    Header always add Access-Control-Allow-Origin: "*"
+    Header always add Access-Control-Allow-Methods: "*"
+    Header always add Access-Control-Allow-Headers: "*"
+    
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ - [R=204,L]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -18,4 +26,5 @@
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
+
 </IfModule>

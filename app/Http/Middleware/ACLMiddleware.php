@@ -17,10 +17,10 @@ class ACLMiddleware
     {
         // Pre-Middleware Action
 
+        if(!$request->user->is_admin) return response()->json([ "errors" => ["permission denied"] ], 403);
+        
         $response = $next($request);
-
         // Post-Middleware Action
-
         return $response;
     }
 }

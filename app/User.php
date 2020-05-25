@@ -9,6 +9,7 @@ class User extends Model
 {
     use SoftDeletes;
     protected $guarded = ['updated_at','created_at','deleted_at','id'];
+    protected $hidden = ['password'];
 
     /**
      * The attributes that should be mutated to dates.
